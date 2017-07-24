@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<style>
+
+		.btn .on{
+			background: red;
+			color: #fff;
+		}
+	</style>
+</head>
+<body ng-app="myapp" ng-controller="mycontroller">
+	<div class="container">
+		<div class="data">
+			{{data[option.cur-1].content}}
+		</div>
+		<div class="btn">
+			<span ng-repeat="i in page" ng-click="getCur(i)" ng-class="{on:option.cur==i}" class='btn btn-btn-default'>{{i}}</span>
+		</div>
+	</div>
+	<script src="js/angular.min.js"></script>
+	<script>
+		var app=angular.module('myapp',[])
+		app.factory('data',function(){
+			return [
+				{"content":'数据1'},
+				{"content":'数据2'},
+				{"content":'数据3'},
+				{"content":'数据4'},
+				{"content":'数据5'},
+				{"content":'数据6'},
+				{"content":'数据7'},
+				{"content":'数据8'},
+				{"content":'数据9'},
+				{"content":'数据10'},
+				{"content":'数据11'},
+				{"content":'数据12'},
+				{"content":'数据13'},
+				{"content":'数据14'},
+				{"content":'数据15'},
+				{"content":'数据16'},
+				{"content":'数据17'}
+			]
+		})
+		app.controller("mycontroller",function($scope,data){
+			$scope.data=data
+			$scope.option={
+				cur:1,//当前页数
+				all:data.length,//总页数
+				showPage:5//显示的页数
+			}
+			$scope.page=getPage($scope.option.cur,$scope.option.all,$scope.option.showPage)
+			$scope.getCur=function(i){
+				if(i=='下一页'){
+					i = parseInt($scope.option.cur) + 1;
+				}else if(i=="上一页"){
+					i = parseInt($scope.option.cur) - 1;
+				}
+				if(i<1){
+					i=1
+				}else if(i>$scope.option.all){
+					i=$scope.option.all
+				}
+				if (i == $scope.option.curr) return;
+				 $scope.option.cur = i
+				 $scope.page=getPage($scope.option.cur,$scope.option.all,$scope.option.showPage)	
+			}
+			function getPage(cur,all,showPage){
+				var page=[];
+				page.push('上一页')
+				var start=cur-Math.floor(showPage/2);
+				var end=cur+Math.floor(showPage/2)+(showPage%2)-1
+				if(start<1){
+					start=1
+					end=start+showPage-1
+				}
+				if(end>all){
+					end=all
+					start=end-showPage+1
+				}
+				if(start>1){
+					page.push(1)
+				}
+				if(start>=Math.floor(showPage/2)){
+					if(start!=2)page.push('...')
+				}
+				if(end==all){
+					end=all-1
+				}
+				for(var i=start;i<=end;i++){
+					page.push(i)
+				}
+				if(end<=all-Math.floor(showPage/2)){
+					page.push('....')
+				}
+				page.push(all)
+				page.push('下一页')
+				return page
+			}
+		})
+
+	</script>
+</body>
+</html>
